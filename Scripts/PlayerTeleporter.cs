@@ -12,6 +12,7 @@ namespace UwUtils
 
         public override void Interact()
         {
+            if (!Utilities.IsValid(targetLocation)) return;
             Networking.LocalPlayer.TeleportTo(targetLocation.position, targetLocation.rotation);
         }
     }

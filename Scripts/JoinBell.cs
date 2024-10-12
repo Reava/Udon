@@ -18,7 +18,7 @@ namespace UwUtils
 
         private void Start()
         {
-            if (AudioSource == null)
+            if (!Utilities.IsValid(AudioSource))
             {
                 _sendDebugError("No audio source found, disabling script");
                 abort = true;
@@ -28,7 +28,7 @@ namespace UwUtils
         public override void OnPlayerJoined(VRCPlayerApi player)
         {
             if (abort) return;
-            if (JoinSound != null && JoinEnable)
+            if (Utilities.IsValid(JoinSound) && JoinEnable)
             {
                 AudioSource.clip = JoinSound;
                 AudioSource.Play();
@@ -37,7 +37,7 @@ namespace UwUtils
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
             if (abort) return;
-            if (LeaveSound != null && JoinEnable)
+            if (Utilities.IsValid(LeaveSound) && JoinEnable)
             {
                 AudioSource.clip = LeaveSound;
                 AudioSource.Play();
@@ -49,9 +49,9 @@ namespace UwUtils
             JoinEnable = !JoinEnable;
         }
 
-        public void _sendDebugError(string e)
+        public void _sendDebugError(string text)
         {
-            Debug.LogError("Reava_UwUtils:<color=red> "+e+"</color>. (" + gameObject + ")", gameObject);
+            Debug.LogError("[UwUtils/JoinBell.cs] " + text + " on '" + gameObject.name + "', did you mean this?", gameObject);
         }
     }
 }

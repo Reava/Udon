@@ -16,6 +16,7 @@ namespace UwUtils
 
         void Start()
         {
+            if (!Utilities.IsValid(programsList) || programsList.Length == 0) { _sendDebug("Programs list is empty or invalid"); return; } // Skip if Empty
             VRCPlayerApi localPlayer = Networking.LocalPlayer;
             if (Networking.LocalPlayer.isMaster)
             {
@@ -24,6 +25,11 @@ namespace UwUtils
                     b.SendCustomEvent(eventName);
                 }
             }
+        }
+
+        public void _sendDebug(string text)
+        {
+            Debug.LogWarning("[UwUtils/InstanceCreatorRelay.cs] " + text + " on '" + gameObject.name + "', did you mean this?", gameObject);
         }
     }
 }

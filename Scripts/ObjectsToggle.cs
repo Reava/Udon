@@ -14,23 +14,21 @@ namespace UwUtils
         [Header("Define a unique string for persistence, leave empty to not save.")]
         [SerializeField] private string persistenceString;
         private bool isToggled = false;
-
+        private bool isValid = true;
         private bool shouldPersist = false;
 
         void Start()
         {
-            if (toggleObjects.Length == 0)
+            if (!Utilities.IsValid(toggleObjects) || toggleObjects.Length == 0)
             {
-                Debug.LogError("[UwUtils/iState.cs] No objects defined to toggle on '" + gameObject.name + "', did you mean this?");
-            }
-            else
-            {
-                return;
+                _sendDebugError(" No objects defined to toggle on");
+                isValid = false;
             }
         }
 
         public override void OnPlayerRestored(VRCPlayerApi player)
         {
+            if (!isValid) return;
             if (string.IsNullOrWhiteSpace(persistenceString)) return;
             if (!player.isLocal) return;
             shouldPersist = true; // This is only true if persistence is available & used, wont be needed in the future.
@@ -50,6 +48,7 @@ namespace UwUtils
 
         public void _InvertState()
         {
+            if (!isValid) return;
             foreach (GameObject toggleObject in toggleObjects)
             {
                 toggleObject.SetActive(!toggleObject.activeSelf);
@@ -58,9 +57,15 @@ namespace UwUtils
             if (shouldPersist) _SaveState();
         }
 
+        public void _sendDebugError(string text)
+        {
+            Debug.LogError("[UwUtils/JoinBell.cs] " + text + " on '" + gameObject.name + "', did you mean this?", gameObject);
+        }
+
         /* Warning: This will cause persistence saving to be out of sync and is only meant as a code template!
         public void _EnableAll()
         {
+            if (!isValid) return;
             foreach (GameObject toggleObject in toggleObjects)
             {
                 toggleObject.SetActive(true);
@@ -71,6 +76,7 @@ namespace UwUtils
         /* Warning: This will cause persistence saving to be out of sync and is only meant as a code template!
         public void _DisableAll()
         {
+            if (!isValid) return;
             foreach (GameObject toggleObject in toggleObjects)
             {
                 toggleObject.SetActive(false);

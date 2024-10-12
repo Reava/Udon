@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UdonSharp;
+using VRC.SDKBase;
 
 namespace UwUtils
 {
@@ -14,10 +15,10 @@ namespace UwUtils
         private bool valid = true;
         void Start()
         {
-            if (toggleObjectsON.Length == 0 & toggleObjectsOFF.Length == 0)
+            if ((!Utilities.IsValid(toggleObjectsOFF) && !Utilities.IsValid(toggleObjectsON)) || (toggleObjectsOFF.Length == 0 && toggleObjectsON.Length == 0))
             {
                 valid = false;
-                Debug.LogError("[UwUtils/iStateSet.cs] Setup is invalid, check your references for object '" + gameObject.name + "'");
+                Debug.LogError("[UwUtils/iStateSet.cs] No objects found to toggle '" + gameObject.name + "'");
             }
             else
             {
@@ -48,15 +49,15 @@ namespace UwUtils
                 toggleObject.SetActive(true);
             }
         }
-        public void _Switch()
+        public void _Flip()
         {
             foreach (GameObject toggleObject in toggleObjectsON)
             {
-                toggleObject.SetActive(toggleObject.activeSelf);
+                toggleObject.SetActive(!toggleObject.activeSelf);
             }
             foreach (GameObject toggleObject in toggleObjectsOFF)
             {
-                toggleObject.SetActive(toggleObject.activeSelf);
+                toggleObject.SetActive(!toggleObject.activeSelf);
             }
         }
     }

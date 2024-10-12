@@ -1,6 +1,7 @@
 ﻿using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
+using VRC.SDKBase;
 using VRC.Udon;
 
 namespace UwUtils
@@ -14,7 +15,7 @@ namespace UwUtils
             [Space]
             public bool DefaultToggleValue = true;
             [Space]
-            [SerializeField] private Toggle[] TargetToggles;
+            [SerializeField] private Toggle[] TargetToggles = new Toggle[0];
             [Header("Target behaviors to send an event on value change to")]
             [Space]
             [SerializeField] private UdonBehaviour[] TargetBehaviorUpdate;
@@ -24,7 +25,11 @@ namespace UwUtils
 
             void Start()
             {
-                if (TargetToggles == null) return;
+                if (!Utilities.IsValid(TargetToggles) || TargetToggles.Length == 0)
+                {
+                    Debug.Log("[UwUtils/ToggleHub.cs]: Empty or invalid array detected on: " + gameObject.name + ". Did you mean this?", gameObject);
+                    return;
+                }
                 foreach (Toggle s in TargetToggles)
                 {
                     if (!s) continue;
@@ -36,8 +41,8 @@ namespace UwUtils
 
             private void _ToggleChange()
             {
-                if (enableLogging) Debug.Log("[Reava_/UwUtils/ToggleHub.cs]: Change detected, updating values from: " + gameObject.name + "", gameObject);
-                if (TargetToggles == null) return;
+                if (enableLogging) Debug.Log("[UwUtils/ToggleHub.cs]: Change detected, updating values from: " + gameObject.name + "", gameObject);
+                if (!Utilities.IsValid(TargetToggles)) return;
                 bool found = false;
                 Toggle tempToggle = null;
                 foreach (Toggle s in TargetToggles)

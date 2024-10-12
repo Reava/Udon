@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
+using VRC.SDKBase;
 
 namespace UwUtils
 {
@@ -25,6 +26,10 @@ namespace UwUtils
 
         public void _updateVolume()
         {
+            if(!Utilities.IsValid(ControlledVolumes) || ControlledVolumes.Length == 0)
+            {
+                _sendDebug("No post processing volume found");
+            }
             if (!useSliderHub && slider)
             {
                 targetFloat = slider.value;
@@ -33,7 +38,7 @@ namespace UwUtils
             {
                 _checkHubValue();
             }
-            if (ControlledVolumes == null) return;
+            if (!Utilities.IsValid(ControlledVolumes)) return;
             foreach(PostProcessVolume pp in ControlledVolumes)
             {
                 pp.weight = targetFloat;
@@ -43,6 +48,11 @@ namespace UwUtils
         public void _checkHubValue()
         {
             targetFloat = SliderHubRef.DefaultSliderValue;
+        }
+
+        public void _sendDebug(string text)
+        {
+            Debug.LogWarning("[UwUtils/InstanceCreatorRelay.cs] " + text + " on '" + gameObject.name + "', did you mean this?", gameObject);
         }
     }
 }
